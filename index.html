@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdMob Earning Calculator</title>
+    <!-- Include Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 p-8">
+    <div class="max-w-md mx-auto bg-white p-6 rounded-md shadow-md">
+        <h1 class="text-2xl font-semibold mb-4">AdMob Earning Calculator</h1>
+
+        <div class="mb-4">
+            <label for="impressions" class="block text-sm font-medium text-gray-600">Impressions:</label>
+            <input type="number" id="impressions" name="impressions" class="mt-1 p-2 w-full border rounded-md">
+        </div>
+
+        <div class="mb-4">
+            <label for="clicks" class="block text-sm font-medium text-gray-600">Clicks:</label>
+            <input type="number" id="clicks" name="clicks" class="mt-1 p-2 w-full border rounded-md">
+        </div>
+
+        <div class="mb-4">
+            <label for="eCPM" class="block text-sm font-medium text-gray-600">eCPM:</label>
+            <input type="number" id="ecpm" name="ecpm" class="mt-1 p-2 w-full border rounded-md">
+        </div>
+
+        <div class="mb-4">
+            <label for="adFormat" class="block text-sm font-medium text-gray-600">Ad Format:</label>
+            <select id="adFormat" name="adFormat" class="mt-1 p-2 w-full border rounded-md">
+                <option value="banner">Banner</option>
+                <option value="interstitial">Interstitial</option>
+                <option value="rewarded">Rewarded</option>
+            </select>
+        </div>
+
+        <div class="mb-4">
+            <label for="currency" class="block text-sm font-medium text-gray-600">Currency:</label>
+            <select id="currency" name="currency" class="mt-1 p-2 w-full border rounded-md">
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+                <!-- Add more currencies as needed -->
+            </select>
+        </div>
+
+        <button onclick="calculateEarnings()" class="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">Calculate
+            Earnings</button>
+
+        <div class="mt-4">
+            <label for="earnings" class="block text-sm font-medium text-gray-600">Estimated Earnings:</label>
+            <input type="text" id="earnings" name="earnings" class="mt-1 p-2 w-full border rounded-md" readonly>
+        </div>
+
+        <div class="mt-4">
+            <label for="formula" class="block text-sm font-medium text-gray-600">Custom Formula (optional):</label>
+            <input type="text" id="formula" name="formula" placeholder="e.g., (impressions / 1000) * eCPM"
+                class="mt-1 p-2 w-full border rounded-md">
+        </div>
+    </div>
+
+    <script>
+        function calculateEarnings() {
+            const impressions = parseFloat(document.getElementById('impressions').value) || 0;
+            const clicks = parseFloat(document.getElementById('clicks').value) || 0;
+            const ecpm = parseFloat(document.getElementById('ecpm').value) || 0;
+            const adFormat = document.getElementById('adFormat').value;
+            const currency = document.getElementById('currency').value;
+            let formula = document.getElementById('formula').value;
+
+            // Use default formula if custom formula is not provided
+            if (!formula) {
+                switch (adFormat) {
+                    case 'banner':
+                        formula = '(impressions / 1000) * eCPM';
+                        break;
+                    case 'interstitial':
+                        formula = '(impressions / 1000) * eCPM + (clicks * eCPM * 2)';
+                        break;
+                    case 'rewarded':
+                        formula = '(impressions / 1000) * eCPM + (clicks * eCPM * 5)';
+                        break;
+                    default:
+                        formula = '(impressions / 1000) * eCPM';
+                        break;
+                }
+            }
+
+            // Replace variables in formula
+            formula = formula.replace(/impressions/g, impressions)
+                .replace(/clicks/g, clicks)
+                .replace(/eCPM/g, ecpm);
+
+            const earnings = eval(formula);
+            document.getElementById('earnings').value = `${earnings.toFixed(2)} ${currency}`;
+        }
+    </script>
+</body>
+
+</html>
